@@ -389,4 +389,14 @@ class EvidencePooler(nn.Module):
 
         # reduce mention sequences by attention pooling
         cluster_mentions = self.compatability(cluster_mentions)
-        query_p_ = query_p.repeat(n_coref_models*max_coref_mentions, 1, 1
+        query_p_ = query_p.repeat(n_coref_models*max_coref_mentions, 1, 1)
+        cluster_mentions = cluster_mentions * query_p_
+
+        cluster_mentions, mention_attn_wts = self.selfattn_mention_level(cluster_mentions, token_mask, training=training)
+        # coref models at batch dim, coref mentions, at time dim
+        # reshape the mask for mentions as sequence and reduce the mention sequence dimension
+        mention_mask = token_mask.view(batch_size*n_coref_models, -1, max_mentions_len)
+        mention_mask = mention_mask.sum(-1) == max_mentions_len
+        cluster_mentions = cluster_mentions.view(batch_size*n_coref_models, -1, self.config.hidden_size)
+
+        return cluster_mentions, mention_mask, mention_attn_wts
