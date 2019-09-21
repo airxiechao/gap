@@ -38,9 +38,9 @@ def init_coref_models(coref_models):
     archive = load_archive(model_url, cuda_device=0)
     ALLEN_DEP_MODEL = Predictor.from_archive(archive)
 
-    model_url = 'https://s3-us-west-2.amazonaws.com/allennlp/models/elmo-constituency-parser-2018.03.14.tar.gz'
-    archive = load_archive(model_url, cuda_device=0)
-    ALLEN_PARSE_MODEL = Predictor.from_archive(archive)
+    #model_url = 'https://s3-us-west-2.amazonaws.com/allennlp/models/elmo-constituency-parser-2018.03.14.tar.gz'
+    #archive = load_archive(model_url, cuda_device=0)
+    #ALLEN_PARSE_MODEL = Predictor.from_archive(archive)
 
     HUGGINGFACE_COREF_MODEL = spacy.load('en_core_web_lg')
     neuralcoref.add_to_pipe(HUGGINGFACE_COREF_MODEL)
