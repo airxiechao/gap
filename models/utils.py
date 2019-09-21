@@ -77,12 +77,12 @@ def init_coref_models(coref_models):
     time.sleep(60)
 
     model_instances = {
-        'syn': None#syntactic_distance_coref_model,
+        'syn': None,#syntactic_distance_coref_model,
         'par': parallelism_coref_model,
-        'url': None#url_title_coref_model,
+        'url': None,#url_title_coref_model,
         # 'stan': stanford_coref_model,
         'allen': allen_coref_model,
-        'hug': None#huggingface_coref_model,
+        'hug': None,#huggingface_coref_model,
         'lee': None#lee_coref_model
     }
 
