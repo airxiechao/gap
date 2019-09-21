@@ -14,7 +14,7 @@ import neuralcoref
 from .base.utils import CoreNLPServer
 from nltk.parse.corenlp import CoreNLPParser
 
-from .pretrained.lee_et_al import LeeEtAl2017
+#from .pretrained.lee_et_al import LeeEtAl2017
 from .pretrained.huggingface import HuggingfaceCorefModel
 from .pretrained.allennlp import AllenNLPCorefModel
 from .pretrained.stanford import StanfordCorefModel
@@ -62,15 +62,15 @@ def init_coref_models(coref_models):
     stanford_coref_model = StanfordCorefModel(STANFORD_MODEL, algo='statistical')
     allen_coref_model = AllenNLPCorefModel(ALLEN_COREF_MODEL, SPACY_MODEL)
     huggingface_coref_model = HuggingfaceCorefModel(HUGGINGFACE_COREF_MODEL)
-    lee_coref_model = LeeEtAl2017(SPACY_MODEL, 
-                                    config = {'name': 'final',
-                                        'log_root': 'externals/data/',
-                                        'model': 'externals/modified_e2e_coref/experiments.conf',
-                                        'context_embeddings_root': 'externals/data/',
-                                        'head_embeddings_root': 'externals/data/',
-                                        'char_vocab_root': 'externals/data/',
-                                        'device': 0
-                                    })
+    #lee_coref_model = LeeEtAl2017(SPACY_MODEL, 
+    #                                config = {'name': 'final',
+    #                                    'log_root': 'externals/data/',
+    #                                    'model': 'externals/modified_e2e_coref/experiments.conf',
+    #                                    'context_embeddings_root': 'externals/data/',
+    #                                    'head_embeddings_root': 'externals/data/',
+    #                                    'char_vocab_root': 'externals/data/',
+    #                                    'device': 0
+    #                                })
 
     logger.info('Waiting a minute to allow all models to load.')
 
@@ -83,7 +83,7 @@ def init_coref_models(coref_models):
         # 'stan': stanford_coref_model,
         'allen': allen_coref_model,
         'hug': huggingface_coref_model,
-        'lee': lee_coref_model
+        'lee': None#lee_coref_model
     }
 
     coref_models = {name: model_instances[name] for name in coref_models}
