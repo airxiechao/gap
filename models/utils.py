@@ -30,11 +30,11 @@ logger= logging.getLogger("GAP")
 def init_coref_models(coref_models):
     SPACY_MODEL = spacy.load('en_core_web_lg')
 
-    model_url = 'externals/data/coref-model-2018.02.05.tar.gz'
+    model_url = 'https://s3-us-west-2.amazonaws.com/allennlp/models/coref-model-2018.02.05.tar.gz'
     archive = load_archive(model_url, cuda_device=0)
     ALLEN_COREF_MODEL = Predictor.from_archive(archive)
 
-    model_url = 'externals/data/biaffine-dependency-parser-ptb-2018.08.23.tar.gz'
+    model_url = 'https://s3-us-west-2.amazonaws.com/allennlp/models/biaffine-dependency-parser-ptb-2018.08.23.tar.gz'
     archive = load_archive(model_url, cuda_device=0)
     ALLEN_DEP_MODEL = Predictor.from_archive(archive)
 
@@ -45,23 +45,23 @@ def init_coref_models(coref_models):
     HUGGINGFACE_COREF_MODEL = spacy.load('en_core_web_lg')
     neuralcoref.add_to_pipe(HUGGINGFACE_COREF_MODEL)
 
-    STANFORD_CORENLP_PATH = 'externals/stanford-corenlp-full-2018-10-05/'
-    server = CoreNLPServer(classpath=STANFORD_CORENLP_PATH,
-                          corenlp_options=AttrDict({'port': 9090, 
-                                                    'timeout': '600000',
-                                                    'thread': '4',
-                                                    'quiet': 'true',
-                                                    'preload': 'tokenize,ssplit,pos,lemma,parse,depparse,ner,coref'}))
-    server.start()
-    STANFORD_SERVER_URL = server.url
-    STANFORD_MODEL = CoreNLPParser(url=STANFORD_SERVER_URL)
+    #STANFORD_CORENLP_PATH = 'externals/stanford-corenlp-full-2018-10-05/'
+    #server = CoreNLPServer(classpath=STANFORD_CORENLP_PATH,
+    #                      corenlp_options=AttrDict({'port': 9090, 
+    #                                                'timeout': '600000',
+    #                                                'thread': '4',
+    #                                                'quiet': 'true',
+    #                                                'preload': 'tokenize,ssplit,pos,lemma,parse,depparse,ner,coref'}))
+    #server.start()
+    #STANFORD_SERVER_URL = server.url
+    #STANFORD_MODEL = CoreNLPParser(url=STANFORD_SERVER_URL)
 
-    syntactic_distance_coref_model = StanfordSyntacticDistanceModel(STANFORD_MODEL)
+    #syntactic_distance_coref_model = StanfordSyntacticDistanceModel(STANFORD_MODEL)
     parallelism_coref_model = ParallelismModel(ALLEN_DEP_MODEL, SPACY_MODEL)
-    url_title_coref_model = URLModel(STANFORD_MODEL)
-    stanford_coref_model = StanfordCorefModel(STANFORD_MODEL, algo='statistical')
+    #url_title_coref_model = URLModel(STANFORD_MODEL)
+    #stanford_coref_model = StanfordCorefModel(STANFORD_MODEL, algo='statistical')
     allen_coref_model = AllenNLPCorefModel(ALLEN_COREF_MODEL, SPACY_MODEL)
-    huggingface_coref_model = HuggingfaceCorefModel(HUGGINGFACE_COREF_MODEL)
+    #huggingface_coref_model = HuggingfaceCorefModel(HUGGINGFACE_COREF_MODEL)
     #lee_coref_model = LeeEtAl2017(SPACY_MODEL, 
     #                                config = {'name': 'final',
     #                                    'log_root': 'externals/data/',
@@ -77,12 +77,12 @@ def init_coref_models(coref_models):
     time.sleep(60)
 
     model_instances = {
-        'syn': syntactic_distance_coref_model,
+        'syn': None#syntactic_distance_coref_model,
         'par': parallelism_coref_model,
-        'url': url_title_coref_model,
+        'url': None#url_title_coref_model,
         # 'stan': stanford_coref_model,
         'allen': allen_coref_model,
-        'hug': huggingface_coref_model,
+        'hug': None#huggingface_coref_model,
         'lee': None#lee_coref_model
     }
 
