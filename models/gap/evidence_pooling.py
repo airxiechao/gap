@@ -266,7 +266,7 @@ class SelfAttention(nn.Module):
         max_pool = torch.max(max_masked, 1)[0]
         min_masked = self.replace_masked_values(X, mask.unsqueeze(2), +1e7)
         min_pool = torch.min(min_masked, 1)[0]
-        mean_pool = torch.sum(X, 1) / torch.sum((1-mask).float(), 1, keepdim=True)
+        mean_pool = torch.sum(X, 1) / torch.sum((~mask).float(), 1, keepdim=True)
 
         # Self-attentive pooling layer
         # Run through linear projection. Shape: (batch_size, sequence length, 1)
@@ -275,7 +275,7 @@ class SelfAttention(nn.Module):
         # X = F.dropout2d(X, 0.5, training=training)
         # X = X.permute(0, 2, 1)   # back to [batch, time, channels]
         self_attentive_logits = self._self_attentive_pooling_projection(X).squeeze(2)
-        self_weights = self.masked_softmax(self_attentive_logits, 1-mask)
+        self_weights = self.masked_softmax(self_attentive_logits, ~mask)
         self_attentive_pool = self.weighted_sum(X, self_weights)
 
         pooled_representations = torch.cat([max_pool, min_pool, self_attentive_pool], 1)
@@ -389,14 +389,4 @@ class EvidencePooler(nn.Module):
 
         # reduce mention sequences by attention pooling
         cluster_mentions = self.compatability(cluster_mentions)
-        query_p_ = query_p.repeat(n_coref_models*max_coref_mentions, 1, 1)
-        cluster_mentions = cluster_mentions * query_p_
-
-        cluster_mentions, mention_attn_wts = self.selfattn_mention_level(cluster_mentions, token_mask, training=training)
-        # coref models at batch dim, coref mentions, at time dim
-        # reshape the mask for mentions as sequence and reduce the mention sequence dimension
-        mention_mask = token_mask.view(batch_size*n_coref_models, -1, max_mentions_len)
-        mention_mask = mention_mask.sum(-1) == max_mentions_len
-        cluster_mentions = cluster_mentions.view(batch_size*n_coref_models, -1, self.config.hidden_size)
-
-        return cluster_mentions, mention_mask, mention_attn_wts
+        query_p_ = query_p.repeat(n_coref_models*max_coref_mentions, 1, 1
