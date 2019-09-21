@@ -26,7 +26,7 @@ class PretrainedProref():
         X = X.copy()
 
         cols = ['tokens', 'clusters', 'pronoun_offset', 'a_span', 'b_span', 'token_to_char_mapping']
-        x_cols = set(X.columns).difference(cols)
+        x_cols = list(set(X.columns).difference(cols))
 
         if syn is not None:
             data = pd.concat([X[x_cols], pd.DataFrame(syn, columns=cols)], axis=1)
